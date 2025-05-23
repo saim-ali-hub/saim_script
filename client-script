@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ `id -u` != 0 ];then
+        echo ""
+        echo -e "\e[31m Failed: Please Run this Script as root\e[0m\n"
+        exit 1
+fi
+
+echo "RUNNING TASK 1 ......................."
+dnf install httpd -y -q &>/dev/null
+
+echo "RUNNING TASK 2 ......................."
+systemctl enable httpd --now &>/dev/null
+
+echo "RUNNING TASK 3 ......................."
+cd /var/www/html
+
+echo "RUNNING TASK 4 ......................."
+git clone https://github.com/saim-ali-hub/saim_script.git
+
