@@ -16,5 +16,5 @@ echo "RUNNING TASK 3 ......................."
 cd /var/www/html
 
 echo "RUNNING TASK 4 ......................."
-git clone https://github.com/saim-ali-hub/saim_script.git
+git clone https://github.com/saim-ali-hub/saim_repo.git
 
