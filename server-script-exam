@@ -13,8 +13,13 @@ echo "RUNNING TASK 2 ......................."
 systemctl enable httpd --now &>/dev/null
 
 echo "RUNNING TASK 3 ......................."
-cd /var/www/html
+firewall-cmd --add-service={http,https} --permanent
+firewall-cmd --add-port={80/tcp,443/tcp} --permanent
+firewall-cmd --reload
 
 echo "RUNNING TASK 4 ......................."
+cd /var/www/html
+
+echo "RUNNING TASK 5 ......................."
 git clone https://github.com/saim-ali-hub/saim_repo.git
 
