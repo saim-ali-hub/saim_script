@@ -5,4 +5,4 @@ echo `complex_abc_1245*abc!!!!!`| passwd --stdin root
 echo "REBOOTING YOUR SYSTEM"
 sleep 0
 shutdown -r now
-exit 0
+exit
