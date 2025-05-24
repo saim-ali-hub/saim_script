@@ -13,9 +13,9 @@ echo "RUNNING TASK 2 ......................."
 systemctl enable httpd --now &>/dev/null
 
 echo "RUNNING TASK 3 ......................."
-firewall-cmd --add-service={http,https} --permanent
-firewall-cmd --add-port={80/tcp,443/tcp} --permanent
-firewall-cmd --reload
+firewall-cmd --add-service={http,https} --permanent &>/dev/null
+firewall-cmd --add-port={80/tcp,443/tcp} --permanent &>/dev/null
+firewall-cmd --reload &>/dev/null
 
 echo "RUNNING TASK 4 ......................."
 cd /var/www/html
