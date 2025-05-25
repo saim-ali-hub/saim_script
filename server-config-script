@@ -1,14 +1,29 @@
 #!/bin/bash
 
-
 if [ `id -u` != 0 ];then
         echo ""
         echo -e "\e[31m Failed: Please Run this Script as root\e[0m\n"
         exit 1
 fi
 
-#!/bin/bash
+echo "RUNNING TASK 1 ......................."
+dnf install httpd -y -q &>/dev/null
 
+echo "RUNNING TASK 2 ......................."
+systemctl enable httpd --now &>/dev/null
+
+echo "RUNNING TASK 3 ......................."
+firewall-cmd --add-service={http,https} --permanent &>/dev/null
+firewall-cmd --add-port={80/tcp,443/tcp} --permanent &>/dev/null
+firewall-cmd --reload &>/dev/null
+
+echo "RUNNING TASK 4 ......................."
+cd /var/www/html
+
+echo "RUNNING TASK 5 ......................."
+git clone https://github.com/saim-ali-hub/saim_repo.git
+
+echo "RUNNING TASK 6 ......................."
 # Define an array of usernames and their corresponding UIDs
 declare -A users
 users=( ["user1"]=4001 ["user2"]=4002 ["user3"]=4003 )
@@ -23,5 +38,9 @@ for user in "${!users[@]}"; do
         echo "Failed to create user $user with UID $uid."
     fi
 done
+
+echo "RUNNING TASK 7 ......................."
 systemctl restart nfs-server
+
+echo "RUNNING TASK 8 ......................."
 systemctl enable nfs-server
