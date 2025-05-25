@@ -24,7 +24,7 @@ dnf install sshpass -q -y &>/dev/null
 pkg_ecode=$?
 
 check_pw() {
-   echo "Checking Root PW".......... 
+   echo "Checking Root PW........" 
    sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
    sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
    systemctl restart sshd &>/dev/null
@@ -77,25 +77,27 @@ check_IP(){
 }
 ###################################################################################
 check_repos(){
-   echo "Checking Repositories"..........
+   echo "Checking Repositories.........."
+app_chk=$(yum repolist enabled | grep -i AppStream | wc -l)
+base_chk=$(yum repolist enabled | grep -i BaseOs | wc -l)
 
-   if [ $app_chk -eq 0 ];then
-
-     echo -e "\e[32mAPPSTREAM_Check: Pass\e[0m\n"
-
-   else
+   if [ "$app_chk" -eq 0 ];then
 
      echo -e "\e[31mAPPSTREAM_Check: Fail\e[0m\n"
 
+   else
+
+     echo -e "\e[32mAPPSTREAM_Check: Pass\e[0m\n"
+
    fi
 
-   if [ $base_chk -eq 0 ];then
+   if [ "$base_chk" -eq 0 ];then
 
-     echo -e "\e[32mBASEOS_Check: Pass\e[0m\n"
+     echo -e "\e[31mBASEOS_Check: Fail\e[0m\n"
 
    else
 
-     echo -e "\e[31mBASEOS_Check: Fail\e[0m\n"
+     echo -e "\e[32mBASEOS_Check: Pass\e[0m\n"
 
    fi
 
@@ -103,7 +105,7 @@ check_repos(){
 #####################################################################################
 user_name="user1"
 validate_autofs() {
-	echo "Checking Autofs".................
+	echo "Checking Autofs......."
         su - $user_name -c "touch /rhome/$user_name/uniq1" &>/dev/null
         file_st=$?
         df -h|grep $user_name &>/dev/null
@@ -116,26 +118,26 @@ validate_autofs() {
         fi
 }	
 ################################################################################
-check_chrony(){
-  echo "Check Chrony"....................
-  systemctl restart chronyd &>/dev/null
+check_chrony() {
+    echo "Checking Chrony..."
 
-  if [ $chrony_chk -eq 0 ];then
+    # Restart chronyd silently
+    systemctl restart chronyd &>/dev/null
 
-     echo -e "\e[32mChrony_Check: Pass\e[0m\n"
+    # Check if chronyd is active
+    chrony_chk=$(systemctl is-active chronyd)
 
-  else
-
-     echo -e "\e[31mChrony_Check: Fail\e[0m\n"
-
-  fi
-
+    if [ "$chrony_chk" == "active" ]; then
+        echo -e "\e[32mChrony_Check: Pass\e[0m\n"
+    else
+        echo -e "\e[31mChrony_Check: Fail\e[0m\n"
+    fi
 }
 
 #####################################################################################
 grp="admins"
 check_grp(){
-      echo "Check Group Exists"..................
+      echo "Check Group Exists ...."
       if [ `getent group admins` ];then
         echo -e "\e[32mGroup: Pass\e[0m\n"
       else
@@ -144,7 +146,7 @@ check_grp(){
 }
 
 check_users(){
-    echo "Check Users Accounts"................
+    echo "Check Users Accounts ......"
     users=("max" "bob" "chris")
 
     all_users_exist=true
@@ -165,7 +167,7 @@ check_users(){
 
 
 check_grp_membership(){
-    echo "Check Group Membership"...................
+    echo "Check Group Membership ..................."
     grp="admins"
     users=("max" "bob")
 
@@ -187,7 +189,7 @@ check_grp_membership(){
 
 
 check_usr_shell(){
-    echo "Check chris shell"................
+    echo "Check chris shell ....."
     lg_shell=`grep chris /etc/passwd|awk -F : '{ print $7 }'|awk -F / '{ print $NF }'`
     des_shell="nologin"
     if [ $lg_shell == $des_shell ];then
@@ -198,7 +200,7 @@ check_usr_shell(){
 }
 
 chk_sudo(){
-    echo "Check SUDO"...................
+    echo "Check SUDO ......"
     grep "^%admins" /etc/sudoers &>/dev/null
     sudo_st=$?
     grep "^%admins" /etc/sudoers|grep "NOPASSWD" &>/dev/null
@@ -213,7 +215,7 @@ chk_sudo(){
 
 
 check_umask(){
-   echo "Check UMASK".................
+   echo "Check UMASK ......."
    des_umask="0002"
    current_umask=`su - bob -c 'umask'`
 
@@ -225,7 +227,7 @@ check_umask(){
 }
 
 chk_enforce_pw(){
-    echo "Check password change enforce"............
+    echo "Check password change enforce ....."
     user_n="max"
     chage -l "$user_n" |head -n1|grep -w 'password must be changed'&>/dev/null
     st=$?
@@ -237,7 +239,7 @@ chk_enforce_pw(){
 }
 
 chk_acc_exp(){
-   echo "Check account expiration"...............
+   echo "Check account expiration ......"
    des_exp_d=45
    chg_d=`chage -l "max" | grep "Account expires" | awk -F ':' '{print $NF}'|sed 's/^ *//;s/ *$//'`
    chage -l "max" | grep "Account expires"|grep -q never
@@ -258,7 +260,7 @@ chk_acc_exp(){
 }
 
 chk_max_days(){
-   echo "Check Max Days"...............
+   echo "Check Max Days ....."
    max_d=`grep '^PASS_MAX_DAYS' /etc/login.defs|awk '{print $2}'`
 
    if [ $max_d == "90" ];then
