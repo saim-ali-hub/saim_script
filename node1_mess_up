@@ -7,7 +7,7 @@ if [ `id -u` != 0 ];then
 fi
 
 echo "RUNNING TASK 1 ......................."
-echo `complex_abc_1245*abc!!!!!`| passwd --stdin root
+echo "complex_abc_1245*abc!!!!!" | passwd --stdin root
 
 echo "REBOOTING YOUR SYSTEM"
 sleep 0
