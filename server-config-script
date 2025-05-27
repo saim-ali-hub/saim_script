@@ -19,9 +19,10 @@ firewall-cmd --reload &>/dev/null
 
 echo "RUNNING TASK 4 ......................."
 cd /var/www/html
+git clone https://github.com/saim-ali-hub/saim_repo.git
 
 echo "RUNNING TASK 5 ......................."
-git clone https://github.com/saim-ali-hub/saim_repo.git
+mkdir /remoteusers
 
 echo "RUNNING TASK 6 ......................."
 # Define an array of usernames and their corresponding UIDs
@@ -40,7 +41,8 @@ for user in "${!users[@]}"; do
 done
 
 echo "RUNNING TASK 7 ......................."
-systemctl restart nfs-server
-
-echo "RUNNING TASK 8 ......................."
-systemctl enable nfs-server
+echo "/remoteuser *(rw,rsync)"
+exportfs -avr
+firewall-cmd --add-service={ntp,mountd,rpc-bind} --permanent &>/dev/null
+firewall-cmd --reload &>/dev/null
+systemctl enable nfs-server --now
