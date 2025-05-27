@@ -20,24 +20,34 @@ if [ `id -u` != 0 ];then
         exit 1
 fi
 ###############################################################################
-dnf install sshpass -q -y &>/dev/null
-pkg_ecode=$?
-
 check_pw() {
-   echo "Checking Root PW........" 
+   echo "Checking Root PW........"
+
+   # Install sshpass if not already installed
+   if ! command -v sshpass &>/dev/null; then
+      dnf install -q -y sshpass &>/dev/null
+      if [ $? -ne 0 ]; then
+         echo -e "\e[31mFailed to install sshpass. Exiting.\e[0m"
+         exit 1
+      fi
+   fi
+
+   # Update sshd config
    sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
    sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
    systemctl restart sshd &>/dev/null
-   if [ $pkg_ecode -eq 0 ];then
-      sshpass -p 'redhat' ssh -o StrictHostKeyChecking=no root@localhost 'pwd>/dev/null' &>/dev/null
-      if [ $? -eq 0 ];then
-        echo -e "\e[32mRoot_PW_Check: Pass\e[0m\n"
-      else
-        echo -e "\e[31mRoot_PW_Check: Fail\e[0m\n"
-      fi
+   if [ $? -ne 0 ]; then
+      echo -e "\e[31mFailed to restart sshd. Exiting.\e[0m"
+      exit 1
+   fi
+
+   # Try logging in with root password
+   sshpass -p 'redhat' ssh -o StrictHostKeyChecking=no root@localhost 'pwd >/dev/null' &>/dev/null
+   if [ $? -eq 0 ]; then
+      echo -e "\e[32mRoot_PW_Check: Pass\e[0m\n"
    else
-     echo -e '"\e[31msshpass" package not installed, Please install it first\e[0m\n'
-     echo -e "\e[31mexit 1\e[0m\n"
+      echo -e "\e[31mRoot_PW_Check: Fail\e[0m\n"
    fi
 }
 
