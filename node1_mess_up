@@ -1,8 +1,37 @@
 #!/bin/bash
 
+if [ `id -u` != 0 ];then
+        echo ""
+        echo -e "\e[31m Failed: Please Run this Script as root\e[0m\n"
+        exit 1
+fi
+
+echo "RUNNING TASK 1 ......................."
 echo `complex_abc_1245*abc!!!!!`| passwd --stdin root
 
 echo "REBOOTING YOUR SYSTEM"
 sleep 0
 shutdown -r now
 exit
+
+echo "RUNNING TASK 3 ......................."
+rm -rf /etc/yum.repos.d/*
+
+echo "RUNNING TASK 4 ......................."
+yum -y remove nfs-utils autofs > /dev/null 2>&1
+
+echo "RUNNING TASK 5 ......................."
+userdel -r user1
+
+echo "RUNNING TASK 6 ......................."
+groupdel admins
+userdel -r max
+userdel -r bob
+userdel -r chris
+
+echo "RUNNING TASK 6 ......................."
+EDITOR="sed -i '/^%admin/d'" visudo
+sed -i '/^umask\b/d' /home/bob/.bashrc
+chage -d "" -E -1 max
+sudo sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS   99999/' /etc/login.defs
+
