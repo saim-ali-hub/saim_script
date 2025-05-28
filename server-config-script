@@ -19,10 +19,10 @@ firewall-cmd --reload &>/dev/null
 
 echo "RUNNING TASK 4 ......................."
 cd /var/www/html
-git clone https://github.com/saim-ali-hub/saim_repo.git
+git clone https://github.com/saim-ali-hub/saim_repo.git &>/dev/null
 
 echo "RUNNING TASK 5 ......................."
-mkdir /remoteusers
+mkdir /remoteusers &>/dev/null
 
 echo "RUNNING TASK 6 ......................."
 # Define an array of usernames and their corresponding UIDs
