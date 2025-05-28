@@ -46,3 +46,25 @@ exportfs -avr  &>/dev/null
 firewall-cmd --add-service={ntp,mountd,rpc-bind} --permanent &>/dev/null
 firewall-cmd --reload &>/dev/null
 systemctl enable nfs-server --now
+
+echo "RUNNING TASK 7 ......................."
+IP_ADDR=$(ip route get 1 | awk '{print $7; exit}')
+NETWORK=$(echo "$IP_ADDR" | cut -d. -f1-3)
+SUBNET="$NETWORK.0/24"
+CONFIG_FILE="/etc/chrony.conf"
+
+yum install -y chrony >/dev/null 2>&1
+systemctl enable chronyd --now >/dev/null 2>&1
+
+# Allow clients on local network (change subnet as needed)
+if ! grep -q '^allow ' "$CONFIG_FILE"; then
+    echo "allow $SUBNET" | sudo tee -a "$CONFIG_FILE" >/dev/null 2>&1
+fi
+
+# Open NTP port in firewall (UDP 123)
+firewall-cmd --add-service={ntp,ptp} --permanent >/dev/null 2>&1
+firewall-cmd --add-port={123/udp,323/udp} --permanent >/dev/null 2>&1
+firewall-cmd --reload >/dev/null 2>&1
+
+# Enable and restart the service
+systemctl restart chronyd >/dev/null 2>&1
