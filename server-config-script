@@ -41,7 +41,7 @@ for user in "${!users[@]}"; do
 done
 
 echo "RUNNING TASK 7 ......................."
-echo "/remoteuser *(rw,rsync)"
+echo "/remoteuser *(rw,rsync)" > /etc/exports
 exportfs -avr
 firewall-cmd --add-service={ntp,mountd,rpc-bind} --permanent &>/dev/null
 firewall-cmd --reload &>/dev/null
