@@ -26,8 +26,25 @@ EDITOR="sed -i '/^%admin/d'" visudo
 sed -i '/^umask\b/d' /home/bob/.bashrc
 chage -d "" -E -1 max
 sudo sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS   99999/' /etc/login.defs
+dnf groupremove -q "RPM Development Tools" -y &>/dev/null
 
 echo "RUNNING TASK 6 ......................."
+systemctl stop httpd &>/dev/null
+sed -i 's/^Listen .*/Listen 82/' /etc/httpd/conf/httpd.conf &>/dev/null
+if semanage port -l | grep -q '^http_port_t.*82'; then
+    semanage port -d -t http_port_t -p tcp 82 &>/dev/null
+fi
+firewall-cmd --remove-port=82/tcp --permanent &>/dev/null
+firewall-cmd --reload &>/dev/null
+
+echo "RUNNING TASK 7 ......................."
+rm -rf /web1 &>/dev/null
+mkdir -p /web1
+sed -i 's|^DocumentRoot .*|DocumentRoot "/web1"|' /etc/httpd/conf/httpd.conf &>/dev/null
+sed -i '0,|<Directory "/var/www"|s|<Directory "/var/www"|<Directory "/web1"|' /etc/httpd/conf/httpd.conf &>/dev/null
+systemctl restart httpd &>/dev/null
+
+echo "RUNNING TASK 8 ......................."
 echo "complex_abc_1245*abc!!!!!" | passwd --stdin root
 echo "REBOOTING YOUR SYSTEM"
 sleep 0
