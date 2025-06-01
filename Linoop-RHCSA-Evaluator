@@ -1,10 +1,15 @@
 #!/bin/bash
 
-source Linoop-eval-script
+if ! source Linoop-eval-script 2>/dev/null; then
+    echo "Error: Cannot source Linoop-eval-script"
+    exit 1
+fi
 
 while true; do
-    read -p "Please select question (all or 1-8 or q to quit): " question
+    read -p "Please select question (all or 1-11 or q to quit): " question
+    question=$(echo "$question" | tr '[:upper:]' '[:lower:]')
     echo ""
+
     case $question in
         1)
             check_pw
@@ -36,7 +41,16 @@ while true; do
         8)
             chk_max_days
             ;;
-
+        9)
+            check_setgid_perm
+            check_sticky_bit
+            ;;
+        10)
+            chk_grp_pkg
+            ;;
+        11)
+            check_selinux
+            ;;
         all)
             check_pw
             check_IP
@@ -52,12 +66,16 @@ while true; do
             chk_enforce_pw
             chk_acc_exp
             chk_max_days
+            check_setgid_perm
+            check_sticky_bit
+            chk_grp_pkg
+            check_selinux
             ;;
         q)
             break
             ;;
         *)
-            echo "You Did not Select a valid Question number"
+            echo "You did not select a valid question number."
             ;;
     esac
 done
