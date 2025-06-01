@@ -280,3 +280,69 @@ chk_max_days(){
    fi
 }
 
+################################################################################
+check_setgid_perm() {
+    echo "Check SetGID......."
+    dir="/tmp/developers"
+
+    if [ -d "$dir" ]; then
+        perm=$(stat -c "%A" "$dir")
+        if [[ "$perm" == *"s"* ]]; then
+            echo -e "\e[32mCollaboration_DIR: Pass\e[0m\n"
+        else
+            echo -e "\e[31mCollaboration_DIR: Fail\e[0m\n"
+        fi
+    else
+        echo -e "\e[31mdevelopers_dir_exists: Fail\e[0m\n"
+    fi
+}
+
+check_sticky_bit() {
+    echo "Check StickyBit ......"
+    dir="/tmp/developers"
+
+    if [ -d "$dir" ]; then
+        perm=$(stat -c "%A" "$dir")
+        if [[ "$perm" == *"t"* ]] || [[ "$perm" == *"T"* ]]; then
+            echo -e "\e[32msticky_bit: Pass\e[0m\n"
+        else
+            echo -e "\e[31msticky_bit: Fail\e[0m\n"
+        fi
+    else
+        echo -e "\e[31mdevelopers_dir_exists: Fail\e[0m\n"
+    fi
+}
+
+################################################################################
+chk_grp_pkg() {
+    echo "Check Group Software Install......"
+    dnf grouplist --installed | grep -w "RPM Development Tools" &>/dev/null
+    pk_e=$?
+
+    if [ $pk_e -eq 0 ]; then
+        echo -e "\e[32mgrp_pkg_install: Pass\e[0m\n"
+    else
+        echo -e "\e[31mgrp_pkg_install: Fail\e[0m\n"
+    fi
+}
+
+################################################################################
+check_selinux() {
+    echo "Check website is accessible....."
+    selinux_chk=$(curl -s localhost:82)
+    firewall-cmd --list-ports | grep -q '82'
+    selinux_port=$?
+
+    if [ "$selinux_chk" == "I am Enjoying RHCSA preparation" ]; then
+        echo -e "\e[32mSelinux_Web_Running: Pass\e[0m\n"
+    else
+        echo -e "\e[31mSelinux_Web_Running: Fail\e[0m\n"
+    fi
+
+    if [ $selinux_port -eq 0 ]; then
+        echo -e "\e[32mSelinux_Web_Firewall_Port: Pass\e[0m\n"
+    else
+        echo -e "\e[31mSelinux_Web_Firewall_Port: Fail\e[0m\n"
+    fi
+}
+
