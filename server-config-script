@@ -27,7 +27,7 @@ else
     echo "Cloning repository..."
     git clone https://github.com/saim-ali-hub/saim_repo.git &>/dev/null
 fi
-
+systemctl restart httpd &>/dev/null
 echo "RUNNING TASK 5 ......................."
 mkdir /remoteusers &>/dev/null
 
