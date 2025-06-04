@@ -43,7 +43,7 @@ done
 echo "RUNNING TASK 7 ......................."
 grep -qxF '/remoteusers *(rw,sync)' /etc/exports || echo '/remoteusers *(rw,sync)' >> /etc/exports
 exportfs -avr  &>/dev/null
-firewall-cmd --add-service={ntp,mountd,rpc-bind} --permanent &>/dev/null
+firewall-cmd --add-service={nfs,mountd,rpc-bind} --permanent &>/dev/null
 firewall-cmd --reload &>/dev/null
 systemctl enable nfs-server --now
 
