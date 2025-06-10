@@ -392,3 +392,15 @@ check_cron(){
   fi 
 }
 ################################################################################
+check_natasha_cron_block(){
+  echo "Checking if user 'natasha' is blocked from creating cron jobs..."
+
+  if grep -q "^natasha$" /etc/cron.deny; then
+    echo -e "\e[32mcron_block_natasha: PASS (user denied in /etc/cron.deny)\e[0m\n"
+  elif [ -f /etc/cron.allow ] && ! grep -q "^natasha$" /etc/cron.allow; then
+    echo -e "\e[32mcron_block_natasha: PASS (user not in /etc/cron.allow)\e[0m\n"
+  else
+    echo -e "\e[31mcron_block_natasha: FAIL (user can create cron jobs)\e[0m\n"
+  fi
+}
+################################################################################
