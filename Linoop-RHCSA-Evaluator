@@ -40,6 +40,10 @@ while true; do
         14) check_tuned_profile ;;
         15) check_cron ;;
         16) check_natasha_cron_block ;;
+        17) check_lvm1 ;;
+        18) check_lvm2 ;;
+        19) check_lvm3 ;;
+        20) swap_check ;; 
         all)
             check_pw
             check_IP
@@ -64,6 +68,10 @@ while true; do
             check_tuned_profile
             check_cron
             check_natasha_cron_block
+            check_lvm1
+            check_lvm2
+            check_lvm3
+            swap_check
             ;;
         q) break ;;
         *) echo "You did not select a valid question number." ;;
