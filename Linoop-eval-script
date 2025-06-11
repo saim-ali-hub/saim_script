@@ -404,3 +404,98 @@ check_natasha_cron_block(){
   fi
 }
 ################################################################################
+check_lvm1(){
+   filesystem="/app1"
+   df -h|grep -q app1
+   fs_st=$?
+   echo "Checking LVM Question 17......."
+   if [ $fs_st -eq 0 ];then
+	  filesystem_size=$(df -m | grep "$filesystem" | awk '{print $2}')
+	  if [ $filesystem_size -ge 250 ] && [ $filesystem_size -le 300 ]; then
+	      echo -e "\e[32mQ17: Pass\e[0m\n"
+	  else
+	      echo -e "\e[31mQ17: Fail\e[0m\n"
+	  fi
+   else
+	   echo -e "\e[31mCheck $filesystem exists: Fail\e[0m\n"
+   fi
+}
+
+################################################################################
+check_lvm2(){
+   filesystem="/app2"
+   df -h|grep -q app2
+   fs_st=$?
+   echo "Checking LVM Question 18 ....."
+   if [ $fs_st -eq 0 ];then
+	  echo "Checking filesystem size for extension in Q18 ........"
+	  filesystem_size=$(df -m | grep "$filesystem" | awk '{print $2}')
+	  if [ $filesystem_size -ge 450 ] && [ $filesystem_size -le 500 ]; then
+	      echo -e "\e[32m Q18: Pass\e[0m\n"
+	  else
+	      echo -e "\e[31m Q18: Fail\e[0m\n"
+	  fi
+   else
+	   echo -e "\e[31mCheck $filesystem exists: Fail\e[0m\n"
+   fi
+}
+
+################################################################################
+check_lvm3(){
+   vg_n="vg3"
+   lv_n="lv3"
+   echo "Checking LVM Question 19 ......"
+
+   vgs 2>/dev/null | grep -w ${vg_n} >/dev/null
+   vg_st=$?
+   lvs 2>/dev/null | grep -w ${lv_n} >/dev/null
+   lv_st=$?
+
+   if [ $vg_st -eq 0 ] && [ $lv_st -eq 0 ]; then
+      echo "Verifying PE size and LE count..."
+
+      pe_req_size=8
+      req_le=50
+
+      pe_size=$(vgdisplay $vg_n | awk '/PE Size/ {print int($3)}')
+      aloc_le=$(lvdisplay /dev/${vg_n}/${lv_n} | awk '/Current LE/ {print $3}')
+
+      if [ "$pe_size" -eq "$pe_req_size" ]; then
+         echo -e "\e[32m Q19 Task1: PE Size = ${pe_size}MiB → Pass\e[0m"
+      else
+         echo -e "\e[31m Q19 Task1: PE Size = ${pe_size}MiB → Fail\e[0m"
+      fi
+
+      if [ "$aloc_le" -eq "$req_le" ]; then
+         echo -e "\e[32m Q19 Task2: LE Count = ${aloc_le} → Pass\e[0m"
+      else
+         echo -e "\e[31m Q19 Task2: LE Count = ${aloc_le} → Fail\e[0m"
+      fi
+   else
+      echo -e "\e[31mCheck VG '$vg_n' and LV '$lv_n' exists: Fail\e[0m"
+   fi
+}
+
+######################################################################################
+swap_check(){
+   echo "check swap.........."
+   swapon -s |egrep -q 'sdb1|vdb1'
+   swp_st=$?
+   #swp_disk=$(swapon -s |egrep 'sdb1|vdb1' 2>/dev/null|awk -F '/' '{print $3}'|awk '{print $1}')
+   #add_size="512"
+
+
+   if [ $swp_st -eq 0 ];then
+      echo -e "\e[32mswp_disk_chk: Pass\e[0m\n"
+      #sw_sdb1=$(swapon -s|grep ${swp_disk}|awk '{printf $3/1023}'|awk -F "." '{print $1}')
+      sw_sdb1=$(lsblk|grep SWAP|egrep 'sdb1|vdb1'|awk '{print $4}'|tr -d M)
+      if [ "$sw_sdb1" == "511" ]||[ "$sw_sdb1" == "512" ]; then
+          echo -e "\e[32mswap_size_chk: Pass\e[0m\n"
+      else
+          echo -e "\e[31mswap_size_chk: Fail\e[0m\n"
+      fi
+   else
+          echo -e "\e[31mswp_disk_chk: Fail\e[0m\n"
+   fi
+}
+################################################################################
