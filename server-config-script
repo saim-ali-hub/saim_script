@@ -30,6 +30,8 @@ fi
 systemctl restart httpd &>/dev/null
 echo "RUNNING TASK 5 ......................."
 mkdir /remoteusers &>/dev/null
+mkdir /public &>/dev/null
+mkdir /private &>/dev/null
 
 echo "RUNNING TASK 6 ......................."
 # Define an array of usernames and their corresponding UIDs
@@ -49,6 +51,8 @@ done
 
 echo "RUNNING TASK 7 ......................."
 grep -qxF '/remoteusers *(rw,sync)' /etc/exports || echo '/remoteusers *(rw,sync)' >> /etc/exports
+grep -qxF '/public *(ro,sync)' /etc/exports || echo '/public *(ro,sync)' >> /etc/exports
+grep -qxF '/private *(rw,sync)' /etc/exports || echo '/private *(rw,sync)' >> /etc/exports
 exportfs -avr  &>/dev/null
 firewall-cmd --add-service={nfs,mountd,rpc-bind} --permanent &>/dev/null
 firewall-cmd --reload &>/dev/null
