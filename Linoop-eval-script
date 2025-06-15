@@ -391,7 +391,7 @@ check_cron(){
     echo -e "\e[31mcron: FAIL\e[0m\n"
   fi 
 }
-################################################################################
+
 check_natasha_cron_block(){
   echo "Checking if user 'natasha' is blocked from creating cron jobs..."
 
@@ -408,7 +408,7 @@ check_lvm1(){
    filesystem="/app1"
    df -h|grep -q app1
    fs_st=$?
-   echo "Checking LVM Question 17......."
+   echo "Checking LVM Question 16......."
    if [ $fs_st -eq 0 ];then
 	  filesystem_size=$(df -m | grep "$filesystem" | awk '{print $2}')
 	  if [ $filesystem_size -ge 250 ] && [ $filesystem_size -le 300 ]; then
@@ -426,7 +426,7 @@ check_lvm2(){
    filesystem="/app2"
    df -h|grep -q app2
    fs_st=$?
-   echo "Checking LVM Question 18 ....."
+   echo "Checking LVM Question 17 ....."
    if [ $fs_st -eq 0 ];then
 	  echo "Checking filesystem size for extension in Q18 ........"
 	  filesystem_size=$(df -m | grep "$filesystem" | awk '{print $2}')
@@ -444,7 +444,7 @@ check_lvm2(){
 check_lvm3(){
    vg_n="vg3"
    lv_n="lv3"
-   echo "Checking LVM Question 19 ......"
+   echo "Checking LVM Question 18 ......"
 
    vgs 2>/dev/null | grep -w ${vg_n} >/dev/null
    vg_st=$?
@@ -478,7 +478,7 @@ check_lvm3(){
 
 ######################################################################################
 swap_check(){
-   echo "check swap.........."
+   echo "check swap Question 19 .........."
    swapon -s |egrep -q 'sdb4|vdb1'
    swp_st=$?
    #swp_disk=$(swapon -s |egrep 'sdb4|vdb1' 2>/dev/null|awk -F '/' '{print $3}'|awk '{print $1}')
@@ -500,7 +500,7 @@ swap_check(){
 }
 ################################################################################
 check_ACL(){
-    echo "Check Q21 (a): /var/tmp/fstab permissions..."
+    echo "Check Q20 (a): /var/tmp/fstab permissions..."
 
     ls -l /var/tmp/fstab | grep '^-..r..r..r' | grep root | grep root &>/dev/null
     st1=$?
@@ -512,14 +512,14 @@ check_ACL(){
     st3=$?
 
     if [ $st1 -eq 0 ] && [ $st2 -eq 0 ] && [ $st3 -eq 0 ]; then
-        echo -e "\e[32mCheck Q21a: Pass\e[0m\n"
+        echo -e "\e[32mCheck Q20a: Pass\e[0m\n"
     else
-        echo -e "\e[31mCheck Q21a: Fail\e[0m\n"
+        echo -e "\e[31mCheck Q20a: Fail\e[0m\n"
     fi
 }
 
 check_ACL_bob(){
-    echo "Check Q21 (b): /tmp/data2 ACL for bob..."
+    echo "Check Q20 (b): /tmp/data2 ACL for bob..."
 
     [ -d /tmp/data2 ] && getfacl /tmp/data2 | grep -w "user:bob:rw" &>/dev/null
     st1=$?
@@ -528,17 +528,56 @@ check_ACL_bob(){
     st2=$?
 
     if [ $st1 -eq 0 ] && [ $st2 -eq 0 ]; then
-        echo -e "\e[32mCheck Q21b: Pass\e[0m\n"
+        echo -e "\e[32mCheck Q20b: Pass\e[0m\n"
     else
-        echo -e "\e[31mCheck Q21b: Fail\e[0m\n"
+        echo -e "\e[31mCheck Q20b: Fail\e[0m\n"
     fi
 }
 
 ################################################################################
 check__webimage(){
-    echo "Check Q22 (a): Container image webimage..."
+    echo "Check Q21 (a): Container image webimage..."
 
     su - linda -c "podman images | grep -w webimage" &>/dev/null
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q21a Image: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q21a Image: Fail\e[0m\n"
+    fi
+}
+
+check_web_container1(){
+    echo "Check Q21 (b): Container web_container1..."
+
+    su - linda -c "podman ps -a | grep -w web_container1" &>/dev/null
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q21b Container: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q21b Container: Fail\e[0m\n"
+    fi
+}
+
+check_pdf_file_conversion(){
+    echo "Check Q21 (b): File converted to PDF..."
+
+    [ -f /opt/myplans/my_file1.pdf ]
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q21b PDF: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q21b PDF: Fail\e[0m\n"
+    fi
+}
+################################################################################
+check_new_webimage(){
+    echo "Check Q22 (a): Container image new_webimage..."
+
+    su - kevin -c "podman images | grep -w new_webimage" &>/dev/null
     st=$?
 
     if [ $st -eq 0 ]; then
@@ -548,10 +587,10 @@ check__webimage(){
     fi
 }
 
-check_web_container1(){
-    echo "Check Q22 (b): Container web_container1..."
+check_container_myweb1(){
+    echo "Check Q22 (b): Container myweb1..."
 
-    su - linda -c "podman ps -a | grep -w web_container1" &>/dev/null
+    su - kevin -c "podman ps -a | grep -w myweb1" &>/dev/null
     st=$?
 
     if [ $st -eq 0 ]; then
@@ -562,7 +601,7 @@ check_web_container1(){
 }
 
 check_pdf_file_conversion(){
-    echo "Check Q22 (b): File converted to PDF..."
+    echo "Check Q23 (b): File converted to PDF..."
 
     [ -f /opt/myplans/my_file1.pdf ]
     st=$?
@@ -573,49 +612,10 @@ check_pdf_file_conversion(){
         echo -e "\e[31mCheck Q22b PDF: Fail\e[0m\n"
     fi
 }
-################################################################################
-check_new_webimage(){
-    echo "Check Q23 (a): Container image new_webimage..."
-
-    su - kevin -c "podman images | grep -w new_webimage" &>/dev/null
-    st=$?
-
-    if [ $st -eq 0 ]; then
-        echo -e "\e[32mCheck Q23a Image: Pass\e[0m\n"
-    else
-        echo -e "\e[31mCheck Q23a Image: Fail\e[0m\n"
-    fi
-}
-
-check_container_myweb1(){
-    echo "Check Q23 (b): Container myweb1..."
-
-    su - kevin -c "podman ps -a | grep -w myweb1" &>/dev/null
-    st=$?
-
-    if [ $st -eq 0 ]; then
-        echo -e "\e[32mCheck Q23b Container: Pass\e[0m\n"
-    else
-        echo -e "\e[31mCheck Q23b Container: Fail\e[0m\n"
-    fi
-}
-
-check_pdf_file_conversion(){
-    echo "Check Q23 (b): File converted to PDF..."
-
-    [ -f /opt/myplans/my_file1.pdf ]
-    st=$?
-
-    if [ $st -eq 0 ]; then
-        echo -e "\e[32mCheck Q23b PDF: Pass\e[0m\n"
-    else
-        echo -e "\e[31mCheck Q23b PDF: Fail\e[0m\n"
-    fi
-}
 
 ################################################################################
 check_autofs_config() {
-    echo "Checking Autofs Q24..."
+    echo "Checking Autofs Q23..."
 
     su - $user_name -c "ls /automount/public &>/dev/null" &>/dev/null
     ro_check=$?
@@ -630,9 +630,9 @@ check_autofs_config() {
     mn2=$?
 
     if [ $ro_check -eq 0 ] && [ $rw_check -eq 0 ] && [ $mn1 -eq 0 ] && [ $mn2 -eq 0 ]; then
-        echo -e "\e[32mAutoFS_Check Q24: Pass\e[0m\n"
+        echo -e "\e[32mAutoFS_Check Q23: Pass\e[0m\n"
     else
-        echo -e "\e[31mAutoFS_Check Q24: Fail\e[0m\n"
+        echo -e "\e[31mAutoFS_Check Q23: Fail\e[0m\n"
     fi
 }
 
