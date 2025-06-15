@@ -499,3 +499,141 @@ swap_check(){
    fi
 }
 ################################################################################
+check_ACL(){
+    echo "Check Q21 (a): /var/tmp/fstab permissions..."
+
+    ls -l /var/tmp/fstab | grep '^-..r..r..r' | grep root | grep root &>/dev/null
+    st1=$?
+
+    getfacl /var/tmp/fstab | grep -w "user:natasha:rw" &>/dev/null
+    st2=$?
+
+    getfacl /var/tmp/fstab | grep -w "user:harry:---" &>/dev/null
+    st3=$?
+
+    if [ $st1 -eq 0 ] && [ $st2 -eq 0 ] && [ $st3 -eq 0 ]; then
+        echo -e "\e[32mCheck Q21a: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q21a: Fail\e[0m\n"
+    fi
+}
+
+check_ACL_bob(){
+    echo "Check Q21 (b): /tmp/data2 ACL for bob..."
+
+    [ -d /tmp/data2 ] && getfacl /tmp/data2 | grep -w "user:bob:rw" &>/dev/null
+    st1=$?
+
+    ls -ld /tmp/data2 | grep '^d.......-' &>/dev/null
+    st2=$?
+
+    if [ $st1 -eq 0 ] && [ $st2 -eq 0 ]; then
+        echo -e "\e[32mCheck Q21b: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q21b: Fail\e[0m\n"
+    fi
+}
+
+################################################################################
+check__webimage(){
+    echo "Check Q22 (a): Container image webimage..."
+
+    su - linda -c "podman images | grep -w webimage" &>/dev/null
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q22a Image: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q22a Image: Fail\e[0m\n"
+    fi
+}
+
+check_web_container1(){
+    echo "Check Q22 (b): Container web_container1..."
+
+    su - linda -c "podman ps -a | grep -w web_container1" &>/dev/null
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q22b Container: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q22b Container: Fail\e[0m\n"
+    fi
+}
+
+check_pdf_file_conversion(){
+    echo "Check Q22 (b): File converted to PDF..."
+
+    [ -f /opt/myplans/my_file1.pdf ]
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q22b PDF: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q22b PDF: Fail\e[0m\n"
+    fi
+}
+################################################################################
+check_new_webimage(){
+    echo "Check Q23 (a): Container image new_webimage..."
+
+    su - kevin -c "podman images | grep -w new_webimage" &>/dev/null
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q23a Image: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q23a Image: Fail\e[0m\n"
+    fi
+}
+
+check_container_myweb1(){
+    echo "Check Q23 (b): Container myweb1..."
+
+    su - kevin -c "podman ps -a | grep -w myweb1" &>/dev/null
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q23b Container: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q23b Container: Fail\e[0m\n"
+    fi
+}
+
+check_pdf_file_conversion(){
+    echo "Check Q23 (b): File converted to PDF..."
+
+    [ -f /opt/myplans/my_file1.pdf ]
+    st=$?
+
+    if [ $st -eq 0 ]; then
+        echo -e "\e[32mCheck Q23b PDF: Pass\e[0m\n"
+    else
+        echo -e "\e[31mCheck Q23b PDF: Fail\e[0m\n"
+    fi
+}
+
+################################################################################
+check_autofs_config() {
+    echo "Checking Autofs Q24..."
+
+    su - $user_name -c "ls /automount/public &>/dev/null" &>/dev/null
+    ro_check=$?
+
+    su - $user_name -c "touch /automount/private/testfile2" &>/dev/null
+    rw_check=$?
+
+    df -h | grep '/automount/public' &>/dev/null
+    mn1=$?
+
+    df -h | grep '/automount/private' &>/dev/null
+    mn2=$?
+
+    if [ $ro_check -eq 0 ] && [ $rw_check -eq 0 ] && [ $mn1 -eq 0 ] && [ $mn2 -eq 0 ]; then
+        echo -e "\e[32mAutoFS_Check Q24: Pass\e[0m\n"
+    else
+        echo -e "\e[31mAutoFS_Check Q24: Fail\e[0m\n"
+    fi
+}
+
+################################################################################
