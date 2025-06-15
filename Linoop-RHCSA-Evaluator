@@ -15,53 +15,71 @@ while true; do
         2) check_IP ;;
         3) check_repos ;;
         4) check_chrony ;;
-        5) validate_autofs ;;
+        5) check_autofs ;;
         6)
             check_grp
             check_users
             check_grp_membership
             check_usr_shell
-            chk_sudo
+            check_sudo
             check_umask
             ;;
         7)
-            chk_enforce_pw
-            chk_acc_exp
+            check_enforce_pw
+            check_acc_exp
             ;;
-        8) chk_max_days ;;
+        8) check_max_days ;;
         9)
             check_setgid_perm
             check_sticky_bit
             ;;
-        10) chk_grp_pkg ;;
+        10) check_grp_pkg ;;
         11) check_selinux ;;
         12) check_bzip2_compression ;;
         13) check_journal ;;
         14) check_tuned_profile ;;
-        15) check_cron ;;
-        16) check_natasha_cron_block ;;
-        17) check_lvm1 ;;
-        18) check_lvm2 ;;
-        19) check_lvm3 ;;
-        20) swap_check ;; 
+        15) 
+            check_cron 
+            check_natasha_cron_block
+            ;;
+        16) check_lvm1 ;;
+        17) check_lvm2 ;;
+        18) check_lvm3 ;;
+        19) check_swap ;; 
+        20) 
+            check_ACL 
+            check_ACL_bob  
+            ;;
+        21) 
+            check_webimage 
+            check_web_container1
+            check_pdf_file_conversion
+            ;; 
+        22) 
+            check_new_webimage 
+            check_container_myweb1
+            check_pdf_file_conversion
+            ;; 
+        23) check_autofs_config ;; 
+
         all)
             check_pw
             check_IP
             check_repos
             check_chrony
-            validate_autofs
+            check_autofs
             check_grp
             check_users
             check_grp_membership
             check_usr_shell
-            chk_sudo
+            check_sudo
             check_umask
-            chk_enforce_pw
-            chk_acc_exp
-            chk_max_days
+            check_enforce_pw
+            check_acc_exp
+            check_max_days
             check_setgid_perm
             check_sticky_bit
-            chk_grp_pkg
+            check_grp_pkg
             check_selinux
             check_bzip2_compression
             check_journal
@@ -71,7 +89,16 @@ while true; do
             check_lvm1
             check_lvm2
             check_lvm3
-            swap_check
+            check_swap
+            check_ACL 
+            check_ACL_bob  
+            check_webimage 
+            check_web_container1
+            check_pdf_file_conversion
+            check_new_webimage 
+            check_container_myweb1
+            check_pdf_file_conversion
+            check_autofs_config ;; 
             ;;
         q) break ;;
         *) echo "You did not select a valid question number." ;;
