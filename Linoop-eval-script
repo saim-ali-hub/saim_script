@@ -4,15 +4,43 @@ echo -e "\n\e[36mLINOOP TEK RHCSA EVALUATION TOOL STARTING\nKEEP CALM AND SIT TI
 echo -e "\n\e[37m***********************RUNNING NOW******************************\n\e[0m"
 
 : ' This Script evaluate students tasks
-   - check root pw      --DONE
-   - Check static 	--DONE
-   - Check repos  	--DONE
-   - Create autofs 	--DONE
-   - check chrony  	--DONE
-   - check group   	--DONE
-   - check Users   	--DONE
+    - check root pw			--DONE
+    - check static IP   		--DONE
+    - check repos			--DONE
+    - check chrony			--DONE
+    - check autofs			--DONE
+    - check group			--DONE
+    - check users			--DONE
+    - check group membership		--DONE
+    - check user shell			--DONE
+    - check sudo privilege		--DONE
+    - check umask			--DONE
+    - check enforce passwd		--DONE
+    - check account expiry		--DONE
+    - check max days			--DONE
+    - check setgid perm			--DONE
+    - check stickybit			--DONE
+    - check group package		--DONE	
+    - check selinux			--DONE
+    - check bzip2 compression		--DONE
+    - check journal			--DONE
+    - check tuned profile		--DONE
+    - check cron			--DONE
+    - check cron block			--DONE
+    - check lvm1			--DONE
+    - check lvm2			--DONE
+    - check lvm3			--DONE
+    - check swap			--DONE
+    - check ACL 			--DONE
+    - check ACL bob  			--DONE
+    - check webimage 			--DONE
+    - check web container1		--DONE
+    - check pdf file conversion		--DONE
+    - check new webimage 		--DONE
+    - check container myweb1		--DONE
+    - check pdf file conversion		--DONE
+    - check autofs config 		--DONE
   '
-
 
 if [ `id -u` != 0 ];then
         echo ""
