@@ -91,27 +91,32 @@ check_interface() {
        return 1
     fi
 }
-
-# Prompt the user for the network interface name
-#while true; do
-#    read -p "Please Enter your network card name (e.g., enp0s3, ens): " n_card
-#    check_interface "$n_card" && break
-#done
 ################################################################################
-check_IP(){
+check_IP() {
    while true; do
-    read -p "Please Enter your network card name (e.g., enp0s3, ens): " n_card
-    check_interface "$n_card" && break
+      read -p "Please Enter your network card name (e.g., enp0s3, ens): " n_card
+      check_interface "$n_card" && break
    done
-   ip_test=`nmcli con show $n_card|grep ipv4.method|awk '{print $2}'`
 
-   echo "Checking Ip"....................
-   if [ $ip_test == "manual" ];then
+   ip_test=$(nmcli con show "$n_card" | grep ipv4.method | awk '{print $2}')
+
+   echo -n "Checking IP"
+   for i in {1..10}; do
+       echo -n "."
+       sleep 0.1
+   done
+   echo ""
+
+   if [ -z "$ip_test" ]; then
+       echo -e "\e[31mCould not determine IP method for interface $n_card\e[0m\n"
+       return 1
+   fi
+
+   if [ "$ip_test" == "manual" ]; then
         echo -e "\e[32mIP_Check: PASS\e[0m\n"
    else
         echo -e "\e[31mIP_Check: FAIL\e[0m\n"
    fi
-
 }
 ###################################################################################
 check_repos(){
