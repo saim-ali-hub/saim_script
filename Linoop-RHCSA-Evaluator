@@ -1,12 +1,18 @@
 #!/bin/bash
 
+# Ensure the eval script exists and can be sourced
+if [ ! -f Linoop-eval-script ]; then
+    echo "Error: Linoop-eval-script file not found!"
+    exit 1
+fi
+
 if ! source Linoop-eval-script 2>/dev/null; then
     echo "Error: Cannot source Linoop-eval-script"
     exit 1
 fi
 
 while true; do
-    read -p "Please select question (all or 1-16 or q to quit): " question
+    read -p "Please select question (all or 1-23 or q to quit): " question
     question=$(echo "$question" | tr '[:upper:]' '[:lower:]')
     echo ""
 
@@ -98,7 +104,7 @@ while true; do
             check_new_webimage 
             check_container_myweb1
             check_pdf_file_conversion
-            check_autofs_config ;; 
+            check_autofs_config
             ;;
         q) break ;;
         *) echo "You did not select a valid question number." ;;
