@@ -67,6 +67,8 @@ while true; do
             check_pdf_file_conversion
             ;; 
         23) check_autofs_config ;; 
+        24) check_find_tasks ;;
+        25) check_grep_tasks ;;
 
         all)
             check_pw
@@ -105,6 +107,8 @@ while true; do
             check_container_myweb1
             check_pdf_file_conversion
             check_autofs_config
+            check_find_tasks
+            check_grep_tasks
             ;;
         q) break ;;
         *) echo "You did not select a valid question number." ;;
