@@ -713,19 +713,20 @@ Check_grep_tasks() {
 
   echo -e "\n--- Validating Grep Commands (Q25) ---"
 
-  echo "25a) Validating grep for 'root' with line numbers..."
-  if grep -ni "root" /etc/ssh/sshd_config | cat -n | grep -q "root"; then
-    echo -e "\033[32mPASS:\033[0m Grep output correct."
+  echo "25a) Validating grep for 'root' with line numbers into /var/tmp/sshd_output..."
+  if [ -s /var/tmp/sshd_output ] && grep -q "root" /var/tmp/sshd_output && grep -qE '^[[:space:]]*[0-9]+[[:space:]]+' /var/tmp/sshd_output; then
+    echo -e "\033[32mPASS:\033[0m File has 'root' entries with line numbers."
   else
-    echo -e "\033[31mFAIL:\033[0m Incorrect or missing grep output."
+    echo -e "\033[31mFAIL:\033[0m /var/tmp/sshd_output missing or incorrect format."
   fi
 
-  echo "25b) Validating empty lines removed and saved to /tmp/filtered_sshd_config..."
-  if [ -s /tmp/filtered_sshd_config ] && ! grep -q '^\s*$' /tmp/filtered_sshd_config; then
+  echo "25b) Validating empty lines removed and saved to /tmp/new_file..."
+  if [ -s /tmp/new_file ] && ! grep -q '^\s*$' /tmp/new_file; then
     echo -e "\033[32mPASS:\033[0m Empty lines removed correctly."
   else
     echo -e "\033[31mFAIL:\033[0m Empty lines still present or file missing."
   fi
+
 }
 
 ###############################################################################
