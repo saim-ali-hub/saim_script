@@ -519,7 +519,6 @@ swap_check(){
    #swp_disk=$(swapon -s |egrep 'sdb4|vdb1' 2>/dev/null|awk -F '/' '{print $3}'|awk '{print $1}')
    #add_size="512"
 
-
    if [ $swp_st -eq 0 ];then
       echo -e "\e[32mswp_disk_chk: Pass\e[0m\n"
       #sw_sdb4=$(swapon -s|grep ${swp_disk}|awk '{printf $3/1023}'|awk -F "." '{print $1}')
@@ -537,20 +536,20 @@ swap_check(){
 check_ACL(){
     echo "Check Q20 (a): /var/tmp/fstab permissions..."
 
-    ls -l /var/tmp/fstab | grep '^-..r..r..r' | grep root | grep root &>/dev/null
+    ls -l /var/tmp/fstab | grep '^-.rw.r..r..+' | grep -w 'root' &>/dev/null
     st1=$?
 
-    getfacl /var/tmp/fstab | grep -w "user:natasha:rw-" &>/dev/null
+    getfacl /var/tmp/fstab | grep '^user:natasha:rw-' &>/dev/null
     st2=$?
 
-    getfacl /var/tmp/fstab | grep -w "user:harry:---" &>/dev/null
+    getfacl /var/tmp/fstab | grep '^user:harry:---' &>/dev/null
     st3=$?
     
-    getfacl /var/tmp/fstab | grep -w "other::r--" &>/dev/null
+    getfacl /var/tmp/fstab | grep '^other::r--' &>/dev/null
     st4=$?
 
 
-    if [ $st1 -eq 0 ] && [ $st2 -eq 0 ] && [ $st3 -eq 0 ] && [ $st3 -eq 0 ]; then
+    if [ $st1 -eq 0 ] && [ $st2 -eq 0 ] && [ $st3 -eq 0 ] && [ $st4 -eq 0 ]; then
         echo -e "\e[32mCheck Q20a: Pass\e[0m\n"
     else
         echo -e "\e[31mCheck Q20a: Fail\e[0m\n"
