@@ -653,7 +653,7 @@ check_autofs_config() {
     echo "Checking Autofs Q23..."
 
     # Check if /automount/public is mounted (RO check: touch must fail)
-    su - $user_name -c "touch /automount/public/test_ro_file" &>/dev/null
+    touch /automount/public/test_ro_file &>/dev/null
     ro_check=$?
     if [ $ro_check -eq 0 ]; then
         echo -e "\e[31mFAIL:\e[0m /automount/public is not read-only (touch succeeded)"
@@ -661,7 +661,7 @@ check_autofs_config() {
     fi
 
     # Check if /automount/private is writable
-    su - $user_name -c "touch /automount/private/test_rw_file" &>/dev/null
+    touch /automount/private/test_rw_file &>/dev/null
     rw_check=$?
     if [ $rw_check -eq 0 ]; then
         rm -f /automount/private/test_rw_file
