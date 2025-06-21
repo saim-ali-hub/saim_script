@@ -540,13 +540,17 @@ check_ACL(){
     ls -l /var/tmp/fstab | grep '^-..r..r..r' | grep root | grep root &>/dev/null
     st1=$?
 
-    getfacl /var/tmp/fstab | grep -w "user:natasha:rw" &>/dev/null
+    getfacl /var/tmp/fstab | grep -w "user:natasha:rw-" &>/dev/null
     st2=$?
 
     getfacl /var/tmp/fstab | grep -w "user:harry:---" &>/dev/null
     st3=$?
+    
+    getfacl /var/tmp/fstab | grep -w "other::r--" &>/dev/null
+    st4=$?
 
-    if [ $st1 -eq 0 ] && [ $st2 -eq 0 ] && [ $st3 -eq 0 ]; then
+
+    if [ $st1 -eq 0 ] && [ $st2 -eq 0 ] && [ $st3 -eq 0 ] && [ $st3 -eq 0 ]; then
         echo -e "\e[32mCheck Q20a: Pass\e[0m\n"
     else
         echo -e "\e[31mCheck Q20a: Fail\e[0m\n"
