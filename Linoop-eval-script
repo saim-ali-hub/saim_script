@@ -652,19 +652,30 @@ check_pdf_file_conversion(){
 check_autofs_config() {
     echo "Checking Autofs Q23..."
 
-    su - $user_name -c "ls /automount/public &>/dev/null" &>/dev/null
+    # Check if /automount/public is mounted (RO check: touch must fail)
+    su - $user_name -c "touch /automount/public/test_ro_file" &>/dev/null
     ro_check=$?
+    if [ $ro_check -eq 0 ]; then
+        echo -e "\e[31mFAIL:\e[0m /automount/public is not read-only (touch succeeded)"
+        rm -f /automount/public/test_ro_file
+    fi
 
-    su - $user_name -c "touch /automount/private/testfile2" &>/dev/null
+    # Check if /automount/private is writable
+    su - $user_name -c "touch /automount/private/test_rw_file" &>/dev/null
     rw_check=$?
+    if [ $rw_check -eq 0 ]; then
+        rm -f /automount/private/test_rw_file
+    fi
 
+    # Check if both mount points are mounted
     df -h | grep '/automount/public' &>/dev/null
     mn1=$?
 
     df -h | grep '/automount/private' &>/dev/null
     mn2=$?
 
-    if [ $ro_check -eq 0 ] && [ $rw_check -eq 0 ] && [ $mn1 -eq 0 ] && [ $mn2 -eq 0 ]; then
+    # Final validation
+    if [ $ro_check -ne 0 ] && [ $rw_check -eq 0 ] && [ $mn1 -eq 0 ] && [ $mn2 -eq 0 ]; then
         echo -e "\e[32mAutoFS_Check Q23: Pass\e[0m\n"
     else
         echo -e "\e[31mAutoFS_Check Q23: Fail\e[0m\n"
