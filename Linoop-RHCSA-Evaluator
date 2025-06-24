@@ -12,7 +12,7 @@ if ! source Linoop-eval-script 2>/dev/null; then
 fi
 
 while true; do
-    read -p "Please select question (all or 1-23 or q to quit): " question
+    read -p "Please select question (all or 1-25 or q to quit): " question
     question=$(echo "$question" | tr '[:upper:]' '[:lower:]')
     echo ""
 
