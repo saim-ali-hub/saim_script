@@ -42,7 +42,7 @@ rm -rf /web1 &>/dev/null
 mkdir -p /web1
 echo "I am Enjoying RHCSA preparation" > /web1/index.html
 sed -i 's|^DocumentRoot .*|DocumentRoot "/web1"|' /etc/httpd/conf/httpd.conf &>/dev/null
-sed -i '0,|<Directory "/var/www"|s|<Directory "/var/www"|<Directory "/web1"|' /etc/httpd/conf/httpd.conf &>/dev/null
+sed -i '0,/<Directory "\/var\/www">/s#<Directory "/var/www">#<Directory "/web1">#' /etc/httpd/conf/httpd.conf &>/dev/null
 systemctl restart httpd &>/dev/null
 
 echo "RUNNING TASK 8 ......................."
