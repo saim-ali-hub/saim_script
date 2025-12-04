@@ -50,9 +50,9 @@ for user in "${!users[@]}"; do
 done
 
 echo "RUNNING TASK 7 ......................."
-grep -qxF '/remoteusers *(rw,sync)' /etc/exports || echo '/remoteusers *(rw,sync,no_root_squash)' >> /etc/exports
-grep -qxF '/public *(ro,sync)' /etc/exports || echo '/public *(ro,sync,no_root_squash)' >> /etc/exports
-grep -qxF '/private *(rw,sync)' /etc/exports || echo '/private *(rw,sync,no_root_squash)' >> /etc/exports
+grep -qxF '/remoteusers *(rw,sync,no_root_squash)' /etc/exports || echo '/remoteusers *(rw,sync,no_root_squash)' >> /etc/exports
+grep -qxF '/public *(ro,sync,no_root_squash)' /etc/exports || echo '/public *(ro,sync,no_root_squash)' >> /etc/exports
+grep -qxF '/private *(rw,sync,no_root_squash)' /etc/exports || echo '/private *(rw,sync,no_root_squash)' >> /etc/exports
 exportfs -avr  &>/dev/null
 firewall-cmd --add-service={nfs,mountd,rpc-bind} --permanent &>/dev/null
 firewall-cmd --reload &>/dev/null
